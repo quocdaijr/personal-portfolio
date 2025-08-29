@@ -48,10 +48,10 @@ export default function ContactPage() {
           <p className="text-muted-foreground mb-6">
             Feel free to reach out directly at{' '}
             <a
-              href="mailto:your.email@example.com"
+              href="mailto:contact@qdjr.dev"
               className="text-primary hover:text-primary/80 transition-colors"
             >
-              your.email@example.com
+              contact@qdjr.dev
             </a>
           </p>
           <p className="text-sm text-muted-foreground">

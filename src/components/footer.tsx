@@ -9,17 +9,17 @@ const socialLinks = [
   },
   {
     name: 'LinkedIn',
-    href: 'https://linkedin.com/in/yourprofile',
+    href: 'https://linkedin.com/in/quocdaijr',
     icon: Linkedin,
   },
   {
-    name: 'Twitter',
-    href: 'https://twitter.com/yourusername',
+    name: 'Original Site',
+    href: 'https://qdjr.dev',
     icon: Twitter,
   },
   {
     name: 'Email',
-    href: 'mailto:your.email@example.com',
+    href: 'mailto:contact@qdjr.dev',
     icon: Mail,
   },
 ];
@@ -55,8 +55,8 @@ export function Footer() {
               Portfolio
             </Link>
             <p className="mt-4 text-sm text-muted-foreground max-w-md">
-              A modern, responsive portfolio website showcasing my professional work, 
-              blog articles, and personal information.
+              Software Engineer specializing in Vue.js, JavaScript, and Python.
+              Building scalable web applications and exploring new technologies.
             </p>
             
             {/* Social Links */}
@@ -105,7 +105,7 @@ export function Footer() {
         <div className="mt-12 pt-8 border-t">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <p className="text-sm text-muted-foreground">
-              © {new Date().getFullYear()} Portfolio. All rights reserved.
+              © {new Date().getFullYear()} Quoc Dai. All rights reserved.
             </p>
             <p className="text-sm text-muted-foreground mt-2 md:mt-0">
               Built with Next.js, Tailwind CSS, and MDX

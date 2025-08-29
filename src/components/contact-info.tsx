@@ -1,26 +1,26 @@
-import { Mail, MapPin, Phone, Github, Linkedin, Twitter } from 'lucide-react';
+import { Mail, MapPin, Github, Linkedin, Twitter } from 'lucide-react';
 
 const contactMethods = [
   {
     icon: Mail,
     label: 'Email',
-    value: 'your.email@example.com',
-    href: 'mailto:your.email@example.com',
+    value: 'contact@qdjr.dev',
+    href: 'mailto:contact@qdjr.dev',
     description: 'Best way to reach me',
   },
   {
     icon: MapPin,
     label: 'Location',
-    value: 'Your City, Country',
+    value: 'Remote',
     href: null,
-    description: 'Available for remote work',
+    description: 'Available for remote work worldwide',
   },
   {
-    icon: Phone,
-    label: 'Phone',
-    value: '+1 (555) 123-4567',
-    href: 'tel:+15551234567',
-    description: 'Available during business hours',
+    icon: Github,
+    label: 'GitHub',
+    value: 'github.com/quocdaijr',
+    href: 'https://github.com/quocdaijr',
+    description: 'Check out my code',
   },
 ];
 
@@ -29,19 +29,19 @@ const socialLinks = [
     name: 'GitHub',
     href: 'https://github.com/quocdaijr',
     icon: Github,
-    description: 'Check out my code',
+    description: 'Open source projects and code',
   },
   {
     name: 'LinkedIn',
-    href: 'https://linkedin.com/in/yourprofile',
+    href: 'https://linkedin.com/in/quocdaijr',
     icon: Linkedin,
     description: 'Professional network',
   },
   {
-    name: 'Twitter',
-    href: 'https://twitter.com/yourusername',
+    name: 'Website',
+    href: 'https://qdjr.dev',
     icon: Twitter,
-    description: 'Follow my thoughts',
+    description: 'Original portfolio site',
   },
 ];
 

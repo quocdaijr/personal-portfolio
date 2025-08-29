@@ -9,21 +9,21 @@ export function Hero() {
         <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight text-foreground mb-6">
           Hi, I&apos;m{' '}
           <span className="bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
-            Your Name
+            Quoc Dai
           </span>
         </h1>
 
         {/* Subtitle */}
         <p className="text-xl md:text-2xl text-muted-foreground mb-8 max-w-2xl mx-auto leading-relaxed">
-          Software Engineer & Digital Designer passionate about creating 
-          exceptional digital experiences through code and design.
+          Software Engineer specializing in Vue.js, JavaScript, and Python.
+          Passionate about building scalable web applications and modern digital solutions.
         </p>
 
         {/* Description */}
         <p className="text-lg text-muted-foreground mb-12 max-w-3xl mx-auto leading-relaxed">
-          I specialize in building modern web applications with React, Next.js, and TypeScript.
-          When I&apos;m not coding, you&apos;ll find me exploring new technologies, contributing to open source,
-          or sharing my knowledge through writing.
+          I have experience building full-stack applications with Vue.js, JavaScript, Python, and modern web technologies.
+          I enjoy working on challenging projects that solve real-world problems and contribute to open source development.
+          Currently exploring new technologies and building innovative solutions.
         </p>
 
         {/* CTA Buttons */}
@@ -50,16 +50,16 @@ export function Hero() {
         {/* Stats or Quick Info */}
         <div className="mt-16 grid grid-cols-1 sm:grid-cols-3 gap-8 max-w-2xl mx-auto">
           <div className="text-center">
-            <div className="text-2xl md:text-3xl font-bold text-foreground">5+</div>
+            <div className="text-2xl md:text-3xl font-bold text-foreground">3+</div>
             <div className="text-sm text-muted-foreground">Years Experience</div>
           </div>
           <div className="text-center">
-            <div className="text-2xl md:text-3xl font-bold text-foreground">50+</div>
-            <div className="text-sm text-muted-foreground">Projects Completed</div>
+            <div className="text-2xl md:text-3xl font-bold text-foreground">15+</div>
+            <div className="text-sm text-muted-foreground">GitHub Repositories</div>
           </div>
           <div className="text-center">
-            <div className="text-2xl md:text-3xl font-bold text-foreground">10+</div>
-            <div className="text-sm text-muted-foreground">Blog Articles</div>
+            <div className="text-2xl md:text-3xl font-bold text-foreground">5+</div>
+            <div className="text-sm text-muted-foreground">Tech Stacks</div>
           </div>
         </div>
       </div>

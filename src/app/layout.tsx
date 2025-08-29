@@ -8,16 +8,16 @@ import '@/styles/globals.css';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://your-domain.com'),
+  metadataBase: new URL('https://quocdaijr-portfolio.netlify.app'),
   title: {
-    default: 'Personal Portfolio - Your Name',
-    template: '%s | Personal Portfolio',
+    default: 'Quoc Dai - Software Engineer & Full-Stack Developer',
+    template: '%s | Quoc Dai Portfolio',
   },
-  description: 'A modern, responsive portfolio website showcasing my professional work, blog articles, and personal information.',
-  keywords: ['portfolio', 'nextjs', 'react', 'tailwindcss', 'mdx', 'blog', 'software engineer', 'web developer'],
-  authors: [{ name: 'Your Name', url: 'https://your-domain.com' }],
-  creator: 'Your Name',
-  publisher: 'Your Name',
+  description: 'Software Engineer specializing in Vue.js, JavaScript, Python, and full-stack web development. Experienced in building scalable applications and modern web solutions.',
+  keywords: ['portfolio', 'software engineer', 'vue.js', 'javascript', 'python', 'full-stack developer', 'web development', 'nextjs', 'react', 'tailwindcss'],
+  authors: [{ name: 'Quoc Dai', url: 'https://quocdaijr-portfolio.netlify.app' }],
+  creator: 'Quoc Dai',
+  publisher: 'Quoc Dai',
   formatDetection: {
     email: false,
     address: false,
@@ -26,24 +26,24 @@ export const metadata: Metadata = {
   openGraph: {
     type: 'website',
     locale: 'en_US',
-    url: 'https://your-domain.com',
-    title: 'Personal Portfolio - Your Name',
-    description: 'A modern, responsive portfolio website showcasing my professional work, blog articles, and personal information.',
-    siteName: 'Personal Portfolio',
+    url: 'https://quocdaijr-portfolio.netlify.app',
+    title: 'Quoc Dai - Software Engineer & Full-Stack Developer',
+    description: 'Software Engineer specializing in Vue.js, JavaScript, Python, and full-stack web development. Experienced in building scalable applications and modern web solutions.',
+    siteName: 'Quoc Dai Portfolio',
     images: [
       {
         url: '/og-image.png',
         width: 1200,
         height: 630,
-        alt: 'Personal Portfolio - Your Name',
+        alt: 'Quoc Dai - Software Engineer Portfolio',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Personal Portfolio - Your Name',
-    description: 'A modern, responsive portfolio website showcasing my professional work, blog articles, and personal information.',
-    creator: '@yourusername',
+    title: 'Quoc Dai - Software Engineer & Full-Stack Developer',
+    description: 'Software Engineer specializing in Vue.js, JavaScript, Python, and full-stack web development.',
+    creator: '@quocdaijr',
     images: ['/og-image.png'],
   },
   robots: {

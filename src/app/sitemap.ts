@@ -2,7 +2,7 @@ import { MetadataRoute } from 'next';
 import { getAllPostsMeta } from '@/lib/mdx';
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = 'https://your-domain.com'; // Update with your actual domain
+  const baseUrl = 'https://quocdaijr-portfolio.netlify.app';
   
   // Get all blog posts
   const posts = getAllPostsMeta();

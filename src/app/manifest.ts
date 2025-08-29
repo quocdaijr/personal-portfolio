@@ -2,9 +2,9 @@ import { MetadataRoute } from 'next';
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: 'Personal Portfolio - Your Name',
-    short_name: 'Portfolio',
-    description: 'A modern, responsive portfolio website showcasing my professional work, blog articles, and personal information.',
+    name: 'Quoc Dai - Software Engineer Portfolio',
+    short_name: 'Quoc Dai',
+    description: 'Software Engineer specializing in Vue.js, JavaScript, Python, and full-stack web development.',
     start_url: '/',
     display: 'standalone',
     background_color: '#ffffff',

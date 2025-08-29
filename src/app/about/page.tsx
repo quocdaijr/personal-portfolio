@@ -18,7 +18,7 @@ export default function AboutPage() {
             About Me
           </h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Passionate software engineer with a love for creating exceptional digital experiences
+            Software Engineer passionate about building scalable web applications and exploring new technologies
           </p>
         </div>
 
@@ -26,26 +26,26 @@ export default function AboutPage() {
         <section className="mb-16">
           <div className="prose prose-lg max-w-none">
             <p className="text-lg text-muted-foreground leading-relaxed mb-6">
-              Hello! I&apos;m a software engineer based in [Your Location], passionate about building
-              digital products that make a difference. My journey in technology started [X years ago]
-              when I wrote my first line of code, and I&apos;ve been hooked ever since.
-            </p>
-            
-            <p className="text-lg text-muted-foreground leading-relaxed mb-6">
-              I specialize in full-stack web development with a focus on React, Next.js, and TypeScript.
-              I love the entire process of building software – from initial concept and design to
-              deployment and maintenance. There&apos;s something magical about turning ideas into reality
-              through code.
+              Hello! I&apos;m Quoc Dai, a software engineer passionate about building
+              innovative web applications and digital solutions. My journey in technology started with
+              a curiosity about how things work, and I&apos;ve been exploring and building ever since.
             </p>
 
             <p className="text-lg text-muted-foreground leading-relaxed mb-6">
-              When I&apos;m not coding, you can find me [your hobbies/interests]. I believe that diverse
-              experiences outside of technology make me a better developer and problem solver.
+              I specialize in full-stack web development with expertise in Vue.js, JavaScript, Python,
+              and modern web technologies. I enjoy working on challenging projects that solve real-world
+              problems and have experience building scalable applications from concept to deployment.
+            </p>
+
+            <p className="text-lg text-muted-foreground leading-relaxed mb-6">
+              My approach to development focuses on writing clean, maintainable code and creating
+              user-friendly interfaces. I&apos;m always eager to learn new technologies and stay
+              up-to-date with the latest industry trends and best practices.
             </p>
 
             <p className="text-lg text-muted-foreground leading-relaxed">
               I&apos;m always excited to work on new projects and collaborate with other passionate
-              individuals. If you have an interesting project or just want to chat about technology,
+              developers. If you have an interesting project or just want to discuss technology,
               feel free to reach out!
             </p>
           </div>
@@ -69,21 +69,21 @@ export default function AboutPage() {
             <div>
               <h3 className="text-lg font-semibold text-foreground mb-3">Interests</h3>
               <ul className="space-y-2 text-muted-foreground">
-                <li>• Open source contributions</li>
-                <li>• Technical writing and blogging</li>
-                <li>• Photography and design</li>
-                <li>• Hiking and outdoor activities</li>
-                <li>• Reading sci-fi and technology books</li>
+                <li>• Open source development</li>
+                <li>• Modern web technologies</li>
+                <li>• Software architecture and design</li>
+                <li>• Learning new programming languages</li>
+                <li>• Building useful applications</li>
               </ul>
             </div>
             <div>
               <h3 className="text-lg font-semibold text-foreground mb-3">Currently Learning</h3>
               <ul className="space-y-2 text-muted-foreground">
-                <li>• Machine Learning and AI</li>
-                <li>• Rust programming language</li>
-                <li>• Cloud architecture patterns</li>
-                <li>• Mobile development with React Native</li>
-                <li>• DevOps and infrastructure</li>
+                <li>• Advanced Vue.js patterns</li>
+                <li>• TypeScript best practices</li>
+                <li>• Cloud deployment strategies</li>
+                <li>• API design and optimization</li>
+                <li>• Modern CSS frameworks</li>
               </ul>
             </div>
           </div>
