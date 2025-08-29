@@ -1,7 +1,7 @@
 // Simple Analytics integration for privacy-focused analytics
 declare global {
   interface Window {
-    sa_event?: (event: string, metadata?: Record<string, any>) => void;
+    sa_event?: (event: string, metadata?: Record<string, unknown>) => void;
   }
 }
 
@@ -14,7 +14,7 @@ export const analytics = {
   },
 
   // Track custom events
-  track: (event: string, properties?: Record<string, any>) => {
+  track: (event: string, properties?: Record<string, unknown>) => {
     if (typeof window !== 'undefined' && window.sa_event) {
       window.sa_event(event, properties);
     }
@@ -77,9 +77,9 @@ export const performance = {
     // First Input Delay (FID)
     new PerformanceObserver((list) => {
       const entries = list.getEntries();
-      entries.forEach((entry) => {
+      entries.forEach((entry: PerformanceEntry & { processingStart?: number }) => {
         analytics.track('web_vital_fid', {
-          value: entry.processingStart - entry.startTime,
+          value: (entry.processingStart || 0) - entry.startTime,
         });
       });
     }).observe({ entryTypes: ['first-input'] });
@@ -88,9 +88,9 @@ export const performance = {
     let clsValue = 0;
     new PerformanceObserver((list) => {
       const entries = list.getEntries();
-      entries.forEach((entry: any) => {
+      entries.forEach((entry: PerformanceEntry & { value?: number; hadRecentInput?: boolean }) => {
         if (!entry.hadRecentInput) {
-          clsValue += entry.value;
+          clsValue += entry.value || 0;
         }
       });
       analytics.track('web_vital_cls', {
@@ -104,7 +104,7 @@ export const performance = {
     if (typeof window === 'undefined') return;
 
     window.addEventListener('load', () => {
-      const loadTime = performance.now();
+      const loadTime = window.performance.now();
       analytics.track('page_load_time', {
         page: pageName,
         load_time: loadTime,
