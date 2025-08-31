@@ -1,11 +1,11 @@
 import { MetadataRoute } from 'next';
-import { getAllPostsMeta } from '@/lib/mdx';
+import { getAllArticlesMeta } from '@/lib/blog-api';
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = 'https://quocdaijr-portfolio.netlify.app';
-  
-  // Get all blog posts
-  const posts = getAllPostsMeta();
+
+  // Get all blog articles
+  const articles = await getAllArticlesMeta();
   
   // Static pages
   const staticPages = [
@@ -41,13 +41,15 @@ export default function sitemap(): MetadataRoute.Sitemap {
     },
   ];
 
-  // Blog post pages
-  const blogPages = posts.map((post) => ({
-    url: `${baseUrl}/blog/${post.slug}`,
-    lastModified: new Date(post.publishedAt),
-    changeFrequency: 'monthly' as const,
-    priority: 0.6,
-  }));
+  // Blog article pages (only include fallback articles that have actual pages)
+  const blogPages = articles
+    .filter(article => article.source === 'fallback')
+    .map((article) => ({
+      url: `${baseUrl}/blog/${article.slug}`,
+      lastModified: new Date(article.publishedAt),
+      changeFrequency: 'monthly' as const,
+      priority: 0.6,
+    }));
 
   return [...staticPages, ...blogPages];
 }

@@ -1,6 +1,6 @@
 import Link from 'next/link';
-import { Calendar, Clock, ArrowRight } from 'lucide-react';
-import { BlogPostMeta } from '@/lib/mdx';
+import { Calendar, Clock, ArrowRight, ExternalLink } from 'lucide-react';
+import { BlogPostMeta } from '@/lib/blog-api';
 
 interface RelatedPostsProps {
   posts: BlogPostMeta[];
@@ -42,9 +42,15 @@ export function RelatedPosts({ posts }: RelatedPostsProps) {
               </div>
 
               <h3 className="text-lg font-semibold text-foreground mb-2 group-hover:text-primary transition-colors line-clamp-2">
-                <Link href={`/blog/${post.slug}`}>
-                  {post.title}
-                </Link>
+                {post.source === 'fallback' ? (
+                  <Link href={`/blog/${post.slug}`}>
+                    {post.title}
+                  </Link>
+                ) : (
+                  <a href={post.url} target="_blank" rel="noopener noreferrer">
+                    {post.title}
+                  </a>
+                )}
               </h3>
 
               <p className="text-muted-foreground text-sm mb-4 line-clamp-2">
@@ -67,13 +73,25 @@ export function RelatedPosts({ posts }: RelatedPostsProps) {
                 )}
               </div>
 
-              <Link
-                href={`/blog/${post.slug}`}
-                className="inline-flex items-center text-sm text-primary hover:text-primary/80 transition-colors group-hover:gap-2"
-              >
-                Read More
-                <ArrowRight className="h-4 w-4 ml-1 transition-all duration-300" />
-              </Link>
+              {post.source === 'fallback' ? (
+                <Link
+                  href={`/blog/${post.slug}`}
+                  className="inline-flex items-center text-sm text-primary hover:text-primary/80 transition-colors group-hover:gap-2"
+                >
+                  Read More
+                  <ArrowRight className="h-4 w-4 ml-1 transition-all duration-300" />
+                </Link>
+              ) : (
+                <a
+                  href={post.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center text-sm text-primary hover:text-primary/80 transition-colors group-hover:gap-2"
+                >
+                  Read Article
+                  <ExternalLink className="h-4 w-4 ml-1 transition-all duration-300" />
+                </a>
+              )}
             </div>
           </article>
         ))}

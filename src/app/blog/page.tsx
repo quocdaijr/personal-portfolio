@@ -2,6 +2,7 @@ import { Metadata } from 'next';
 import { BlogList } from '@/components/blog-list';
 import { BlogSearch } from '@/components/blog-search';
 import { BlogCategories } from '@/components/blog-categories';
+import { BlogNotice } from '@/components/blog-notice';
 
 export const metadata: Metadata = {
   title: 'Blog',
@@ -18,9 +19,12 @@ export default function BlogPage() {
             Blog
           </h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Thoughts on software development, technology trends, and lessons learned from building products
+            Latest articles from the tech community - featuring content from Dev.to, Reddit, and other developer resources
           </p>
         </div>
+
+        {/* Notice */}
+        <BlogNotice />
 
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
           {/* Main Content */}
@@ -43,7 +47,7 @@ export default function BlogPage() {
                   Stay Updated
                 </h3>
                 <p className="text-sm text-muted-foreground mb-4">
-                  Get notified when I publish new articles about web development and technology.
+                  Get notified about the latest tech articles and development trends.
                 </p>
                 <div className="space-y-3">
                   <input

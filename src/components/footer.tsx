@@ -105,7 +105,7 @@ export function Footer() {
         <div className="mt-12 pt-8 border-t">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <p className="text-sm text-muted-foreground">
-              © {new Date().getFullYear()} Quoc Dai. All rights reserved.
+              © {new Date().getFullYear()} The Augster. All rights reserved.
             </p>
             <p className="text-sm text-muted-foreground mt-2 md:mt-0">
               Built with Next.js, Tailwind CSS, and MDX

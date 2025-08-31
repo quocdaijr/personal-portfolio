@@ -1,9 +1,8 @@
 import { Metadata } from 'next';
-import { notFound } from 'next/navigation';
+import { notFound, redirect } from 'next/navigation';
 import Link from 'next/link';
 import { Calendar, Clock, Tag, ArrowLeft } from 'lucide-react';
-import { getPostBySlug, getAllPostSlugs, getRelatedPosts, compileMDXContent } from '@/lib/mdx';
-import { BlogPostContent } from '@/components/blog-post-content';
+import { getArticleBySlug, getAllArticles, getRelatedArticles } from '@/lib/blog-api';
 import { RelatedPosts } from '@/components/related-posts';
 import { ShareButtons } from '@/components/share-buttons';
 
@@ -14,38 +13,43 @@ interface BlogPostPageProps {
 }
 
 export async function generateStaticParams() {
-  const slugs = getAllPostSlugs();
-  return slugs.map((slug) => ({ slug }));
+  try {
+    const articles = await getAllArticles();
+    return articles.map((article) => ({ slug: article.slug }));
+  } catch (error) {
+    console.error('Error generating static params:', error);
+    return [];
+  }
 }
 
 export async function generateMetadata({ params }: BlogPostPageProps): Promise<Metadata> {
   const { slug } = await params;
-  const post = await getPostBySlug(slug);
-  
-  if (!post) {
+  const article = await getArticleBySlug(slug);
+
+  if (!article) {
     return {
-      title: 'Post Not Found',
+      title: 'Article Not Found',
     };
   }
 
   return {
-    title: post.title,
-    description: post.description,
-    keywords: post.tags,
-    authors: [{ name: post.author }],
+    title: article.title,
+    description: article.description,
+    keywords: article.tags,
+    authors: [{ name: article.author }],
     openGraph: {
-      title: post.title,
-      description: post.description,
+      title: article.title,
+      description: article.description,
       type: 'article',
-      publishedTime: post.publishedAt,
-      modifiedTime: post.updatedAt,
-      authors: [post.author],
-      tags: post.tags,
+      publishedTime: article.publishedAt,
+      modifiedTime: article.updatedAt,
+      authors: [article.author],
+      tags: article.tags,
     },
     twitter: {
       card: 'summary_large_image',
-      title: post.title,
-      description: post.description,
+      title: article.title,
+      description: article.description,
     },
   };
 }
@@ -61,14 +65,18 @@ function formatDate(dateString: string) {
 
 export default async function BlogPostPage({ params }: BlogPostPageProps) {
   const { slug } = await params;
-  const post = await getPostBySlug(slug);
-  
-  if (!post) {
+  const article = await getArticleBySlug(slug);
+
+  if (!article) {
     notFound();
   }
 
-  const compiledContent = await compileMDXContent(post.content);
-  const relatedPosts = getRelatedPosts(slug, post.tags);
+  // If this is an external article, redirect to the original source
+  if (article.source !== 'fallback') {
+    redirect(article.url);
+  }
+
+  const relatedArticles = await getRelatedArticles(slug, article.tags);
 
   return (
     <article className="container mx-auto px-4 sm:px-6 lg:px-8 py-16">
@@ -88,39 +96,38 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
         <header className="mb-12">
           <div className="flex items-center gap-2 text-sm text-muted-foreground mb-4">
             <Calendar className="h-4 w-4" />
-            {formatDate(post.publishedAt)}
-            {post.updatedAt && (
+            {formatDate(article.publishedAt)}
+            {article.updatedAt && (
               <>
                 <span>•</span>
-                <span>Updated {formatDate(post.updatedAt)}</span>
+                <span>Updated {formatDate(article.updatedAt)}</span>
               </>
             )}
             <span>•</span>
             <Clock className="h-4 w-4" />
-            {post.readTime}
+            {article.readTime}
             <span>•</span>
             <Tag className="h-4 w-4" />
-            {post.category}
+            {article.category}
           </div>
 
           <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-foreground mb-6">
-            {post.title}
+            {article.title}
           </h1>
 
           <p className="text-xl text-muted-foreground mb-6">
-            {post.description}
+            {article.description}
           </p>
 
           {/* Tags */}
           <div className="flex flex-wrap gap-2 mb-6">
-            {post.tags.map((tag) => (
-              <Link
+            {article.tags.map((tag) => (
+              <span
                 key={tag}
-                href={`/blog/tag/${tag.toLowerCase()}`}
-                className="px-3 py-1 text-sm bg-muted text-muted-foreground rounded-full hover:bg-accent hover:text-accent-foreground transition-colors"
+                className="px-3 py-1 text-sm bg-muted text-muted-foreground rounded-full"
               >
                 {tag}
-              </Link>
+              </span>
             ))}
           </div>
 
@@ -129,25 +136,31 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 bg-primary rounded-full flex items-center justify-center">
                 <span className="text-primary-foreground font-semibold text-sm">
-                  {post.author.charAt(0).toUpperCase()}
+                  {article.author.charAt(0).toUpperCase()}
                 </span>
               </div>
               <div>
-                <p className="text-sm font-medium text-foreground">{post.author}</p>
+                <p className="text-sm font-medium text-foreground">{article.author}</p>
                 <p className="text-xs text-muted-foreground">Author</p>
               </div>
             </div>
 
-            <ShareButtons 
-              title={post.title}
-              url={`/blog/${post.slug}`}
+            <ShareButtons
+              title={article.title}
+              url={`/blog/${article.slug}`}
             />
           </div>
         </header>
 
         {/* Post Content */}
         <div className="prose prose-lg max-w-none">
-          <BlogPostContent content={compiledContent} />
+          <div className="text-muted-foreground leading-relaxed">
+            {article.content ? (
+              <div dangerouslySetInnerHTML={{ __html: article.content.replace(/\n/g, '<br />') }} />
+            ) : (
+              <p>This is a fallback article. The full content would be available on the original platform.</p>
+            )}
+          </div>
         </div>
 
         {/* Post Footer */}
@@ -155,23 +168,23 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div>
               <p className="text-sm text-muted-foreground">
-                Published on {formatDate(post.publishedAt)}
-                {post.updatedAt && ` • Updated on ${formatDate(post.updatedAt)}`}
+                Published on {formatDate(article.publishedAt)}
+                {article.updatedAt && ` • Updated on ${formatDate(article.updatedAt)}`}
               </p>
             </div>
-            
-            <ShareButtons 
-              title={post.title}
-              url={`/blog/${post.slug}`}
+
+            <ShareButtons
+              title={article.title}
+              url={`/blog/${article.slug}`}
               variant="compact"
             />
           </div>
         </footer>
 
         {/* Related Posts */}
-        {relatedPosts.length > 0 && (
+        {relatedArticles.length > 0 && (
           <div className="mt-16">
-            <RelatedPosts posts={relatedPosts} />
+            <RelatedPosts posts={relatedArticles} />
           </div>
         )}
 
