@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google';
 import { ThemeProvider } from '@/components/theme-provider';
 import { Navigation } from '@/components/navigation';
 import { Footer } from '@/components/footer';
+import { Analytics } from '@/components/analytics';
 import '@/styles/globals.css';
 
 const inter = Inter({ subsets: ['latin'] });
@@ -88,6 +89,7 @@ export default function RootLayout({
             </main>
             <Footer />
           </div>
+          <Analytics />
         </ThemeProvider>
       </body>
     </html>

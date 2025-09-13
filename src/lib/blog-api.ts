@@ -13,7 +13,7 @@ export interface BlogPost {
   author: string;
   authorImage?: string;
   url: string;
-  source: 'dev.to' | 'hashnode' | 'medium' | 'reddit' | 'hackernews' | 'fallback';
+  source: 'dev.to' | 'medium' | 'reddit' | 'hackernews' | 'fallback';
   coverImage?: string;
   slug: string;
 }
@@ -31,7 +31,7 @@ export interface BlogPostMeta {
   author: string;
   authorImage?: string;
   url: string;
-  source: 'dev.to' | 'hashnode' | 'medium' | 'reddit' | 'hackernews' | 'fallback';
+  source: 'dev.to' | 'medium' | 'reddit' | 'hackernews' | 'fallback';
   coverImage?: string;
   slug: string;
 }
@@ -98,77 +98,7 @@ async function fetchDevToArticles(): Promise<BlogPost[]> {
   }
 }
 
-// Hashnode GraphQL API
-async function fetchHashnodeArticles(): Promise<BlogPost[]> {
-  try {
-    const query = `
-      query {
-        feed(type: FEATURED, first: 10) {
-          edges {
-            node {
-              id
-              title
-              brief
-              content {
-                markdown
-              }
-              publishedAt
-              updatedAt
-              tags {
-                name
-              }
-              author {
-                name
-                profilePicture
-              }
-              url
-              coverImage {
-                url
-              }
-              slug
-              readTimeInMinutes
-            }
-          }
-        }
-      }
-    `;
-
-    const response = await fetch('https://gql.hashnode.com/', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ query }),
-    });
-
-    if (!response.ok) throw new Error('Hashnode API failed');
-
-    const data = await response.json();
-    const articles = data.data?.feed?.edges || [];
-
-    return articles.map((edge: { node: { id: string; title: string; brief?: string; content?: { markdown?: string }; publishedAt: string; updatedAt?: string; tags?: { name: string }[]; author: { name: string; profilePicture?: string }; url: string; coverImage?: { url?: string }; slug: string; readTimeInMinutes?: number } }, index: number) => ({
-      id: `hashnode-${edge.node.id}`,
-      title: edge.node.title,
-      description: truncateText(edge.node.brief || edge.node.title, 160),
-      content: edge.node.content?.markdown || edge.node.brief,
-      publishedAt: edge.node.publishedAt,
-      updatedAt: edge.node.updatedAt,
-      tags: edge.node.tags?.map(tag => tag.name) || [],
-      category: 'Development',
-      featured: index < 2, // First 2 articles are featured
-      readTime: edge.node.readTimeInMinutes ? `${edge.node.readTimeInMinutes} min read` : calculateReadTime(edge.node.content?.markdown || edge.node.brief || ''),
-      author: edge.node.author.name,
-      authorImage: edge.node.author.profilePicture,
-      url: edge.node.url,
-      source: 'hashnode' as const,
-      coverImage: edge.node.coverImage?.url,
-      slug: edge.node.slug,
-    }));
-  } catch (error) {
-    console.error('Error fetching Hashnode articles:', error);
-    return [];
-  }
-}
+// Note: Hashnode API removed due to build issues - can be re-added later if needed
 
 // Hacker News API
 async function fetchHackerNewsArticles(): Promise<BlogPost[]> {
@@ -477,16 +407,7 @@ export async function getAllArticles(): Promise<BlogPost[]> {
       }));
     }
 
-    if (!shouldSkipAPI('hashnode')) {
-      apiCalls.push(fetchHashnodeArticles().then(articles => {
-        updateAPIHealth('hashnode', true);
-        return articles;
-      }).catch(error => {
-        updateAPIHealth('hashnode', false);
-        console.error('Hashnode API failed:', error);
-        return [];
-      }));
-    }
+    // Hashnode API temporarily disabled due to build issues
 
     if (!shouldSkipAPI('hackernews')) {
       apiCalls.push(fetchHackerNewsArticles().then(articles => {
