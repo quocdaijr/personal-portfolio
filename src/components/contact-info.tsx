@@ -11,7 +11,7 @@ const contactMethods = [
   {
     icon: MapPin,
     label: 'Location',
-    value: 'Remote',
+    value: 'Vietnam',
     href: null,
     description: 'Available for remote work worldwide',
   },

@@ -18,7 +18,7 @@ export default function AboutPage() {
             About Me
           </h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Software Engineer passionate about building scalable web applications and exploring new technologies
+            Full-Stack Developer from Vietnam with 7+ years of experience building robust web applications and contributing to open source projects
           </p>
         </div>
 
@@ -26,27 +26,27 @@ export default function AboutPage() {
         <section className="mb-16">
           <div className="prose prose-lg max-w-none">
             <p className="text-lg text-muted-foreground leading-relaxed mb-6">
-              Hello! I&apos;m Quoc Dai, a software engineer passionate about building
-              innovative web applications and digital solutions. My journey in technology started with
-              a curiosity about how things work, and I&apos;ve been exploring and building ever since.
+              Hello! I&apos;m Quoc Dai, a full-stack developer from Vietnam with over 7 years of experience
+              in software development. My journey began in 2017 when I started exploring web technologies,
+              and since then I&apos;ve been passionate about building robust, scalable applications.
             </p>
 
             <p className="text-lg text-muted-foreground leading-relaxed mb-6">
-              I specialize in full-stack web development with expertise in Vue.js, JavaScript, Python,
-              and modern web technologies. I enjoy working on challenging projects that solve real-world
-              problems and have experience building scalable applications from concept to deployment.
+              I specialize in modern web development with deep expertise in Vue.js, Nuxt.js, PHP (Laravel, Yii2),
+              and Python. My experience spans from building content management systems and audit tools
+              to exploring containerization with Docker and orchestration with Kubernetes.
             </p>
 
             <p className="text-lg text-muted-foreground leading-relaxed mb-6">
-              My approach to development focuses on writing clean, maintainable code and creating
-              user-friendly interfaces. I&apos;m always eager to learn new technologies and stay
-              up-to-date with the latest industry trends and best practices.
+              Throughout my career, I&apos;ve contributed to open source projects, including developing
+              a Yii2 audit package for tracking web/CLI requests and database changes. I believe in
+              writing clean, maintainable code and following modern development practices.
             </p>
 
             <p className="text-lg text-muted-foreground leading-relaxed">
-              I&apos;m always excited to work on new projects and collaborate with other passionate
-              developers. If you have an interesting project or just want to discuss technology,
-              feel free to reach out!
+              I&apos;m always excited to work on challenging projects and collaborate with fellow developers.
+              Whether it&apos;s building a new application from scratch or contributing to existing projects,
+              I bring dedication and technical expertise to every endeavor.
             </p>
           </div>
         </section>
@@ -69,21 +69,21 @@ export default function AboutPage() {
             <div>
               <h3 className="text-lg font-semibold text-foreground mb-3">Interests</h3>
               <ul className="space-y-2 text-muted-foreground">
-                <li>• Open source development</li>
-                <li>• Modern web technologies</li>
-                <li>• Software architecture and design</li>
-                <li>• Learning new programming languages</li>
-                <li>• Building useful applications</li>
+                <li>• Open source development and contributions</li>
+                <li>• Modern web frameworks and libraries</li>
+                <li>• DevOps and containerization technologies</li>
+                <li>• Database optimization and search engines</li>
+                <li>• Building developer tools and utilities</li>
               </ul>
             </div>
             <div>
-              <h3 className="text-lg font-semibold text-foreground mb-3">Currently Learning</h3>
+              <h3 className="text-lg font-semibold text-foreground mb-3">Currently Exploring</h3>
               <ul className="space-y-2 text-muted-foreground">
-                <li>• Advanced Vue.js patterns</li>
-                <li>• TypeScript best practices</li>
-                <li>• Cloud deployment strategies</li>
-                <li>• API design and optimization</li>
-                <li>• Modern CSS frameworks</li>
+                <li>• Advanced Kubernetes orchestration</li>
+                <li>• Next.js and React ecosystem</li>
+                <li>• Elasticsearch and search optimization</li>
+                <li>• Message queue systems (RabbitMQ)</li>
+                <li>• Modern deployment strategies</li>
               </ul>
             </div>
           </div>

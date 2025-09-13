@@ -15,15 +15,15 @@ export function Hero() {
 
         {/* Subtitle */}
         <p className="text-xl md:text-2xl text-muted-foreground mb-8 max-w-2xl mx-auto leading-relaxed">
-          Software Engineer specializing in Vue.js, JavaScript, and Python.
-          Passionate about building scalable web applications and modern digital solutions.
+          Full-Stack Developer from Vietnam specializing in Vue.js, PHP, and Python.
+          Building scalable web applications and contributing to open source projects.
         </p>
 
         {/* Description */}
         <p className="text-lg text-muted-foreground mb-12 max-w-3xl mx-auto leading-relaxed">
-          I have experience building full-stack applications with Vue.js, JavaScript, Python, and modern web technologies.
-          I enjoy working on challenging projects that solve real-world problems and contribute to open source development.
-          Currently exploring new technologies and building innovative solutions.
+          With 7+ years in software development, I create robust applications using Vue.js, Nuxt.js, Laravel, and Python.
+          I&apos;ve built everything from content management systems to Kubernetes learning environments,
+          always focusing on clean code and modern development practices.
         </p>
 
         {/* CTA Buttons */}
@@ -50,15 +50,15 @@ export function Hero() {
         {/* Stats or Quick Info */}
         <div className="mt-16 grid grid-cols-1 sm:grid-cols-3 gap-8 max-w-2xl mx-auto">
           <div className="text-center">
-            <div className="text-2xl md:text-3xl font-bold text-foreground">3+</div>
+            <div className="text-2xl md:text-3xl font-bold text-foreground">7+</div>
             <div className="text-sm text-muted-foreground">Years Experience</div>
           </div>
           <div className="text-center">
-            <div className="text-2xl md:text-3xl font-bold text-foreground">15+</div>
+            <div className="text-2xl md:text-3xl font-bold text-foreground">15</div>
             <div className="text-sm text-muted-foreground">GitHub Repositories</div>
           </div>
           <div className="text-center">
-            <div className="text-2xl md:text-3xl font-bold text-foreground">5+</div>
+            <div className="text-2xl md:text-3xl font-bold text-foreground">8+</div>
             <div className="text-sm text-muted-foreground">Tech Stacks</div>
           </div>
         </div>
