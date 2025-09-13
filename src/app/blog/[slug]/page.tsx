@@ -1,7 +1,11 @@
 import { Metadata } from 'next';
-import { notFound, redirect } from 'next/navigation';
+import { notFound } from 'next/navigation';
 import Link from 'next/link';
-import { Calendar, Clock, Tag, ArrowLeft } from 'lucide-react';
+import { Calendar, Clock, Tag, ArrowLeft, ExternalLink } from 'lucide-react';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
+import rehypeHighlight from 'rehype-highlight';
+import rehypeRaw from 'rehype-raw';
 import { getArticleBySlug, getAllArticles, getRelatedArticles } from '@/lib/blog-api';
 import { RelatedPosts } from '@/components/related-posts';
 import { ShareButtons } from '@/components/share-buttons';
@@ -71,10 +75,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
     notFound();
   }
 
-  // If this is an external article, redirect to the original source
-  if (article.source !== 'fallback') {
-    redirect(article.url);
-  }
+  // Note: We no longer redirect external articles, we display them with proper attribution
 
   const relatedArticles = await getRelatedArticles(slug, article.tags);
 
@@ -152,15 +153,90 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
           </div>
         </header>
 
-        {/* Post Content */}
-        <div className="prose prose-lg max-w-none">
-          <div className="text-muted-foreground leading-relaxed">
-            {article.content ? (
-              <div dangerouslySetInnerHTML={{ __html: article.content.replace(/\n/g, '<br />') }} />
-            ) : (
-              <p>This is a fallback article. The full content would be available on the original platform.</p>
-            )}
+        {/* Source Attribution */}
+        {article.source !== 'fallback' && (
+          <div className="mb-8 p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
+            <div className="flex items-center gap-2 text-sm text-blue-700 dark:text-blue-300">
+              <ExternalLink className="h-4 w-4" />
+              <span>
+                This article was originally published on{' '}
+                <span className="font-semibold capitalize">{article.source}</span> by{' '}
+                <span className="font-semibold">{article.author}</span>.
+              </span>
+            </div>
+            <div className="mt-2">
+              <a
+                href={article.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1 text-sm text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-200 transition-colors"
+              >
+                Read original article
+                <ExternalLink className="h-3 w-3" />
+              </a>
+            </div>
           </div>
+        )}
+
+        {/* Post Content */}
+        <div className="prose prose-lg dark:prose-invert max-w-none">
+          {article.content ? (
+            <ReactMarkdown
+              remarkPlugins={[remarkGfm]}
+              rehypePlugins={[rehypeHighlight, rehypeRaw]}
+              components={{
+                // Custom components for better styling
+                h1: ({ children }) => <h1 className="text-3xl font-bold mt-8 mb-4 text-foreground">{children}</h1>,
+                h2: ({ children }) => <h2 className="text-2xl font-semibold mt-6 mb-3 text-foreground">{children}</h2>,
+                h3: ({ children }) => <h3 className="text-xl font-medium mt-4 mb-2 text-foreground">{children}</h3>,
+                p: ({ children }) => <p className="mb-4 leading-relaxed text-foreground">{children}</p>,
+                a: ({ href, children }) => (
+                  <a
+                    href={href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-200 underline"
+                  >
+                    {children}
+                  </a>
+                ),
+                code: ({ children, className }) => {
+                  const isInline = !className;
+                  return isInline ? (
+                    <code className="bg-gray-100 dark:bg-gray-800 px-1 py-0.5 rounded text-sm">
+                      {children}
+                    </code>
+                  ) : (
+                    <code className={className}>{children}</code>
+                  );
+                },
+                pre: ({ children }) => (
+                  <pre className="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg overflow-x-auto mb-4">
+                    {children}
+                  </pre>
+                ),
+                blockquote: ({ children }) => (
+                  <blockquote className="border-l-4 border-blue-500 pl-4 italic my-4 text-gray-700 dark:text-gray-300">
+                    {children}
+                  </blockquote>
+                ),
+                ul: ({ children }) => <ul className="list-disc list-inside mb-4 space-y-1">{children}</ul>,
+                ol: ({ children }) => <ol className="list-decimal list-inside mb-4 space-y-1">{children}</ol>,
+                li: ({ children }) => <li className="mb-1 text-foreground">{children}</li>,
+              }}
+            >
+              {article.content}
+            </ReactMarkdown>
+          ) : (
+            <div className="text-foreground">
+              <p className="mb-4 leading-relaxed">{article.description}</p>
+              <div className="mt-4 p-4 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg">
+                <p className="text-sm text-yellow-700 dark:text-yellow-300">
+                  Full content is not available for this article. Please visit the original source for the complete article.
+                </p>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Post Footer */}

@@ -26,27 +26,37 @@ export default function AboutPage() {
         <section className="mb-16">
           <div className="prose prose-lg max-w-none">
             <p className="text-lg text-muted-foreground leading-relaxed mb-6">
-              Hello! I&apos;m Quoc Dai, a full-stack developer from Vietnam with over 7 years of experience
-              in software development. My journey began in 2017 when I started exploring web technologies,
-              and since then I&apos;ve been passionate about building robust, scalable applications.
+              Hello! I&apos;m Quoc Dai, a passionate full-stack developer from Vietnam with over 7 years of hands-on experience
+              in software development. My journey began in 2017 when I first discovered the power of web technologies,
+              and since then I&apos;ve been on an exciting path of continuous learning and building innovative solutions.
             </p>
 
             <p className="text-lg text-muted-foreground leading-relaxed mb-6">
-              I specialize in modern web development with deep expertise in Vue.js, Nuxt.js, PHP (Laravel, Yii2),
-              and Python. My experience spans from building content management systems and audit tools
-              to exploring containerization with Docker and orchestration with Kubernetes.
+              I specialize in modern web development with deep expertise across the full technology stack. My primary focus
+              areas include Vue.js and Nuxt.js for frontend development, PHP frameworks like Laravel and Yii2 for backend systems,
+              and Python for automation and data processing. I&apos;ve built everything from personal portfolio sites to
+              enterprise-level content management systems and developer tools.
             </p>
 
             <p className="text-lg text-muted-foreground leading-relaxed mb-6">
-              Throughout my career, I&apos;ve contributed to open source projects, including developing
-              a Yii2 audit package for tracking web/CLI requests and database changes. I believe in
-              writing clean, maintainable code and following modern development practices.
+              One of my proudest contributions to the open source community is the Yii2 Audit Package, which provides
+              comprehensive tracking of web/CLI requests, database changes, and system errors. This project demonstrates
+              my commitment to building tools that help other developers create more reliable and maintainable applications.
+              I believe in the power of open source collaboration and actively contribute to projects that benefit the broader
+              developer community.
+            </p>
+
+            <p className="text-lg text-muted-foreground leading-relaxed mb-6">
+              Recently, I&apos;ve been expanding my expertise into DevOps and cloud technologies, exploring containerization
+              with Docker and orchestration with Kubernetes. I&apos;m fascinated by the intersection of development and
+              operations, and how modern deployment strategies can improve application reliability and scalability.
             </p>
 
             <p className="text-lg text-muted-foreground leading-relaxed">
-              I&apos;m always excited to work on challenging projects and collaborate with fellow developers.
-              Whether it&apos;s building a new application from scratch or contributing to existing projects,
-              I bring dedication and technical expertise to every endeavor.
+              What drives me most is the opportunity to solve complex problems through code and to work with teams that
+              share a passion for creating exceptional digital experiences. Whether I&apos;m architecting a new system
+              from the ground up, optimizing existing applications for better performance, or mentoring fellow developers,
+              I approach every project with curiosity, dedication, and a commitment to excellence.
             </p>
           </div>
         </section>
@@ -56,6 +66,27 @@ export default function AboutPage() {
 
         {/* Experience Section */}
         <Experience />
+
+        {/* Development Philosophy */}
+        <section className="mb-16">
+          <h2 className="text-2xl md:text-3xl font-bold tracking-tight text-foreground mb-8">
+            Development Philosophy
+          </h2>
+          <div className="bg-card border rounded-lg p-6">
+            <p className="text-muted-foreground leading-relaxed mb-4">
+              I believe that great software is built on three fundamental principles: <strong>clarity</strong>,
+              <strong>reliability</strong>, and <strong>maintainability</strong>. Every line of code I write
+              is guided by these principles, ensuring that solutions are not just functional, but also
+              sustainable and scalable for long-term success.
+            </p>
+            <p className="text-muted-foreground leading-relaxed">
+              My approach emphasizes thorough testing, comprehensive documentation, and continuous learning.
+              I&apos;m passionate about staying current with industry best practices while also contributing
+              back to the community through open source projects and knowledge sharing. I believe that the
+              best developers are those who never stop learning and growing.
+            </p>
+          </div>
+        </section>
 
         {/* Education Section */}
         <Education />
@@ -67,23 +98,25 @@ export default function AboutPage() {
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div>
-              <h3 className="text-lg font-semibold text-foreground mb-3">Interests</h3>
+              <h3 className="text-lg font-semibold text-foreground mb-3">Core Interests</h3>
               <ul className="space-y-2 text-muted-foreground">
-                <li>• Open source development and contributions</li>
-                <li>• Modern web frameworks and libraries</li>
-                <li>• DevOps and containerization technologies</li>
-                <li>• Database optimization and search engines</li>
-                <li>• Building developer tools and utilities</li>
+                <li>• Open source development and community contributions</li>
+                <li>• Modern web frameworks and progressive web applications</li>
+                <li>• DevOps practices and containerization technologies</li>
+                <li>• Database optimization and search engine technologies</li>
+                <li>• Building developer tools that improve productivity</li>
+                <li>• Software architecture and scalable system design</li>
               </ul>
             </div>
             <div>
               <h3 className="text-lg font-semibold text-foreground mb-3">Currently Exploring</h3>
               <ul className="space-y-2 text-muted-foreground">
-                <li>• Advanced Kubernetes orchestration</li>
-                <li>• Next.js and React ecosystem</li>
-                <li>• Elasticsearch and search optimization</li>
-                <li>• Message queue systems (RabbitMQ)</li>
-                <li>• Modern deployment strategies</li>
+                <li>• Advanced Kubernetes orchestration and service mesh</li>
+                <li>• Next.js and React ecosystem for modern web apps</li>
+                <li>• Elasticsearch for advanced search and analytics</li>
+                <li>• Message queue systems and event-driven architecture</li>
+                <li>• Cloud-native deployment strategies and CI/CD pipelines</li>
+                <li>• AI/ML integration in web applications</li>
               </ul>
             </div>
           </div>
