@@ -3,7 +3,8 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Calendar, Clock, ArrowRight, RefreshCw, ExternalLink } from 'lucide-react';
-import { getAllArticles, type BlogPost } from '@/lib/blog-api';
+import { APIStatus } from '@/components/api-status';
+import { getAllArticles, clearArticleCache, type BlogPost } from '@/lib/blog-api';
 
 interface LoadingState {
   isLoading: boolean;
@@ -17,6 +18,18 @@ function formatDate(dateString: string) {
     day: 'numeric',
   });
 }
+
+function getSourceStyle(source: string) {
+  const styles = {
+    'dev.to': 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200',
+    'hashnode': 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200',
+    'hackernews': 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200',
+    'medium': 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
+    'reddit': 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200',
+    'fallback': 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200',
+  };
+  return styles[source as keyof typeof styles] || styles.fallback;
+}
 const POSTS_PER_PAGE = 8;
 
 export function BlogList() {
@@ -24,9 +37,12 @@ export function BlogList() {
   const [articles, setArticles] = useState<BlogPost[]>([]);
   const [loading, setLoading] = useState<LoadingState>({ isLoading: true, error: null });
 
-  const fetchArticles = async () => {
+  const fetchArticles = async (forceClear = false) => {
     setLoading({ isLoading: true, error: null });
     try {
+      if (forceClear) {
+        clearArticleCache();
+      }
       const fetchedArticles = await getAllArticles();
       setArticles(fetchedArticles);
       setLoading({ isLoading: false, error: null });
@@ -78,7 +94,7 @@ export function BlogList() {
           <h2 className="text-lg font-semibold text-destructive mb-2">Unable to Load Articles</h2>
           <p className="text-muted-foreground mb-4">{loading.error}</p>
           <button
-            onClick={fetchArticles}
+            onClick={() => fetchArticles()}
             className="inline-flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors"
           >
             <RefreshCw className="h-4 w-4" />
@@ -96,17 +112,28 @@ export function BlogList() {
         <div>
           <h2 className="text-2xl font-bold text-foreground">Latest Articles</h2>
           <p className="text-sm text-muted-foreground mt-1">
-            Fresh content from Dev.to, Reddit, and other tech communities
+            Fresh content from Dev.to, Hashnode, Hacker News, Medium, Reddit, and other tech communities
           </p>
         </div>
-        <button
-          onClick={fetchArticles}
-          className="inline-flex items-center gap-2 px-3 py-2 text-sm border border-input bg-background hover:bg-accent hover:text-accent-foreground rounded-md transition-colors"
-          title="Refresh articles"
-        >
-          <RefreshCw className="h-4 w-4" />
-          Refresh
-        </button>
+        <div className="flex gap-2 items-center">
+          <APIStatus />
+          <button
+            onClick={() => fetchArticles(false)}
+            className="inline-flex items-center gap-2 px-3 py-2 text-sm border border-input bg-background hover:bg-accent hover:text-accent-foreground rounded-md transition-colors"
+            title="Refresh articles from cache"
+          >
+            <RefreshCw className="h-4 w-4" />
+            Refresh
+          </button>
+          <button
+            onClick={() => fetchArticles(true)}
+            className="inline-flex items-center gap-2 px-3 py-2 text-sm bg-primary text-primary-foreground hover:bg-primary/90 rounded-md transition-colors"
+            title="Force refresh from all APIs"
+          >
+            <RefreshCw className="h-4 w-4" />
+            Force Refresh
+          </button>
+        </div>
       </div>
 
       {/* Featured Posts */}
@@ -127,7 +154,7 @@ export function BlogList() {
                     <Clock className="h-3 w-3" />
                     {post.readTime}
                     <span>•</span>
-                    <span className="px-2 py-0.5 bg-primary/10 text-primary rounded-full text-xs">
+                    <span className={`px-2 py-0.5 rounded-full text-xs ${getSourceStyle(post.source)}`}>
                       {post.source}
                     </span>
                   </div>
@@ -208,7 +235,7 @@ export function BlogList() {
                     <Clock className="h-3 w-3" />
                     {post.readTime}
                     <span>•</span>
-                    <span className="px-2 py-0.5 bg-primary/10 text-primary rounded-full text-xs">
+                    <span className={`px-2 py-0.5 rounded-full text-xs ${getSourceStyle(post.source)}`}>
                       {post.source}
                     </span>
                   </div>

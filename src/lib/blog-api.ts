@@ -13,7 +13,7 @@ export interface BlogPost {
   author: string;
   authorImage?: string;
   url: string;
-  source: 'dev.to' | 'hashnode' | 'medium' | 'reddit' | 'fallback';
+  source: 'dev.to' | 'hashnode' | 'medium' | 'reddit' | 'hackernews' | 'fallback';
   coverImage?: string;
   slug: string;
 }
@@ -31,7 +31,7 @@ export interface BlogPostMeta {
   author: string;
   authorImage?: string;
   url: string;
-  source: 'dev.to' | 'hashnode' | 'medium' | 'reddit' | 'fallback';
+  source: 'dev.to' | 'hashnode' | 'medium' | 'reddit' | 'hackernews' | 'fallback';
   coverImage?: string;
   slug: string;
 }
@@ -98,19 +98,186 @@ async function fetchDevToArticles(): Promise<BlogPost[]> {
   }
 }
 
+// Hashnode GraphQL API
+async function fetchHashnodeArticles(): Promise<BlogPost[]> {
+  try {
+    const query = `
+      query {
+        feed(type: FEATURED, first: 10) {
+          edges {
+            node {
+              id
+              title
+              brief
+              content {
+                markdown
+              }
+              publishedAt
+              updatedAt
+              tags {
+                name
+              }
+              author {
+                name
+                profilePicture
+              }
+              url
+              coverImage {
+                url
+              }
+              slug
+              readTimeInMinutes
+            }
+          }
+        }
+      }
+    `;
+
+    const response = await fetch('https://gql.hashnode.com/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ query }),
+    });
+
+    if (!response.ok) throw new Error('Hashnode API failed');
+
+    const data = await response.json();
+    const articles = data.data?.feed?.edges || [];
+
+    return articles.map((edge: { node: { id: string; title: string; brief?: string; content?: { markdown?: string }; publishedAt: string; updatedAt?: string; tags?: { name: string }[]; author: { name: string; profilePicture?: string }; url: string; coverImage?: { url?: string }; slug: string; readTimeInMinutes?: number } }, index: number) => ({
+      id: `hashnode-${edge.node.id}`,
+      title: edge.node.title,
+      description: truncateText(edge.node.brief || edge.node.title, 160),
+      content: edge.node.content?.markdown || edge.node.brief,
+      publishedAt: edge.node.publishedAt,
+      updatedAt: edge.node.updatedAt,
+      tags: edge.node.tags?.map(tag => tag.name) || [],
+      category: 'Development',
+      featured: index < 2, // First 2 articles are featured
+      readTime: edge.node.readTimeInMinutes ? `${edge.node.readTimeInMinutes} min read` : calculateReadTime(edge.node.content?.markdown || edge.node.brief || ''),
+      author: edge.node.author.name,
+      authorImage: edge.node.author.profilePicture,
+      url: edge.node.url,
+      source: 'hashnode' as const,
+      coverImage: edge.node.coverImage?.url,
+      slug: edge.node.slug,
+    }));
+  } catch (error) {
+    console.error('Error fetching Hashnode articles:', error);
+    return [];
+  }
+}
+
+// Hacker News API
+async function fetchHackerNewsArticles(): Promise<BlogPost[]> {
+  try {
+    // Get top stories
+    const topStoriesResponse = await fetch('https://hacker-news.firebaseio.com/v0/topstories.json');
+    if (!topStoriesResponse.ok) throw new Error('Hacker News API failed');
+
+    const topStories = await topStoriesResponse.json();
+    const storyIds = topStories.slice(0, 15); // Get first 15 stories
+
+    // Fetch story details
+    const storyPromises = storyIds.map(async (id: number) => {
+      const response = await fetch(`https://hacker-news.firebaseio.com/v0/item/${id}.json`);
+      if (!response.ok) return null;
+      return response.json();
+    });
+
+    const stories = await Promise.all(storyPromises);
+    const validStories = stories.filter((story: { url?: string; type: string; deleted?: boolean; dead?: boolean }) =>
+      story && story.url && story.type === 'story' && !story.deleted && !story.dead
+    );
+
+    return validStories.slice(0, 8).map((story: { id: number; title: string; text?: string; time: number; by: string; url: string; score: number }, index: number) => ({
+      id: `hn-${story.id}`,
+      title: story.title,
+      description: truncateText(story.text || story.title, 160),
+      content: story.text || story.title,
+      publishedAt: new Date(story.time * 1000).toISOString(),
+      tags: ['hackernews', 'tech', 'programming'],
+      category: 'Discussion',
+      featured: index < 1 && story.score > 100, // Featured if high score
+      readTime: calculateReadTime(story.text || story.title),
+      author: story.by,
+      url: story.url,
+      source: 'hackernews' as const,
+      slug: createSlug(story.title),
+    }));
+  } catch (error) {
+    console.error('Error fetching Hacker News articles:', error);
+    return [];
+  }
+}
+
+// Medium RSS feed parsing (using RSS2JSON service)
+async function fetchMediumArticles(): Promise<BlogPost[]> {
+  try {
+    // Using popular tech publications on Medium
+    const feeds = [
+      'https://medium.com/feed/@javascript',
+      'https://medium.com/feed/@reactjs',
+      'https://medium.com/feed/@vuejs'
+    ];
+
+    const allArticles: BlogPost[] = [];
+
+    for (const feedUrl of feeds) {
+      try {
+        // Use RSS2JSON service to convert RSS to JSON
+        const response = await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(feedUrl)}&count=5`);
+        if (!response.ok) continue;
+
+        const data = await response.json();
+        if (data.status !== 'ok' || !data.items) continue;
+
+        const articles = data.items.map((item: { guid: string; title: string; description?: string; content?: string; pubDate: string; author: string; link: string; thumbnail?: string }) => ({
+          id: `medium-${item.guid.split('/').pop() || Math.random().toString(36)}`,
+          title: item.title,
+          description: truncateText(item.description || item.title, 160),
+          content: item.content || item.description,
+          publishedAt: item.pubDate,
+          tags: ['medium', 'javascript', 'programming'],
+          category: 'Development',
+          featured: false,
+          readTime: calculateReadTime(item.content || item.description || ''),
+          author: item.author || 'Medium Author',
+          url: item.link,
+          source: 'medium' as const,
+          coverImage: item.thumbnail,
+          slug: createSlug(item.title),
+        }));
+
+        allArticles.push(...articles);
+      } catch (feedError) {
+        console.error(`Error fetching Medium feed ${feedUrl}:`, feedError);
+        continue;
+      }
+    }
+
+    return allArticles.slice(0, 6); // Limit to 6 articles
+  } catch (error) {
+    console.error('Error fetching Medium articles:', error);
+    return [];
+  }
+}
+
 // Reddit API (r/programming, r/webdev)
 async function fetchRedditArticles(): Promise<BlogPost[]> {
   try {
     const subreddits = ['programming', 'webdev', 'javascript'];
     const allArticles: BlogPost[] = [];
-    
+
     for (const subreddit of subreddits) {
       const response = await fetch(`https://www.reddit.com/r/${subreddit}/hot.json?limit=5`);
       if (!response.ok) continue;
-      
+
       const data = await response.json();
       const posts = data.data.children;
-      
+
       const articles = posts
         .filter((post: { data: { is_self: boolean; url: string; stickied: boolean } }) => !post.data.is_self && post.data.url && !post.data.stickied)
         .map((post: { data: { id: string; title: string; selftext?: string; created_utc: number; author: string; url: string; permalink: string; thumbnail?: string } }) => ({
@@ -129,10 +296,10 @@ async function fetchRedditArticles(): Promise<BlogPost[]> {
           coverImage: post.data.thumbnail !== 'self' ? post.data.thumbnail : undefined,
           slug: createSlug(post.data.title),
         }));
-      
+
       allArticles.push(...articles);
     }
-    
+
     return allArticles.slice(0, 8); // Limit to 8 articles
   } catch (error) {
     console.error('Error fetching Reddit articles:', error);
@@ -228,6 +395,65 @@ function setCachedArticles(articles: BlogPost[]): void {
   }
 }
 
+// API Health Monitoring
+interface APIHealth {
+  source: string;
+  isHealthy: boolean;
+  lastChecked: number;
+  errorCount: number;
+}
+
+const API_HEALTH_KEY = 'api_health_status';
+const HEALTH_CHECK_INTERVAL = 5 * 60 * 1000; // 5 minutes
+
+function getAPIHealth(): Record<string, APIHealth> {
+  if (typeof window === 'undefined') return {};
+
+  try {
+    const health = localStorage.getItem(API_HEALTH_KEY);
+    return health ? JSON.parse(health) : {};
+  } catch {
+    return {};
+  }
+}
+
+function updateAPIHealth(source: string, isHealthy: boolean): void {
+  if (typeof window === 'undefined') return;
+
+  try {
+    const health = getAPIHealth();
+    const now = Date.now();
+
+    health[source] = {
+      source,
+      isHealthy,
+      lastChecked: now,
+      errorCount: isHealthy ? 0 : (health[source]?.errorCount || 0) + 1,
+    };
+
+    localStorage.setItem(API_HEALTH_KEY, JSON.stringify(health));
+  } catch (error) {
+    console.error('Error updating API health:', error);
+  }
+}
+
+function shouldSkipAPI(source: string): boolean {
+  const health = getAPIHealth();
+  const apiHealth = health[source];
+
+  if (!apiHealth) return false;
+
+  const now = Date.now();
+  const timeSinceLastCheck = now - apiHealth.lastChecked;
+
+  // Skip if API has failed multiple times recently
+  if (apiHealth.errorCount >= 3 && timeSinceLastCheck < HEALTH_CHECK_INTERVAL) {
+    return true;
+  }
+
+  return false;
+}
+
 // Main API functions
 export async function getAllArticles(): Promise<BlogPost[]> {
   // Check cache first
@@ -235,39 +461,98 @@ export async function getAllArticles(): Promise<BlogPost[]> {
   if (cached && cached.length > 0) {
     return cached;
   }
-  
+
   try {
-    // Fetch from multiple sources
-    const [devToArticles, redditArticles] = await Promise.allSettled([
-      fetchDevToArticles(),
-      fetchRedditArticles(),
-    ]);
-    
+    // Prepare API calls based on health status
+    const apiCalls: Promise<BlogPost[]>[] = [];
+
+    if (!shouldSkipAPI('dev.to')) {
+      apiCalls.push(fetchDevToArticles().then(articles => {
+        updateAPIHealth('dev.to', true);
+        return articles;
+      }).catch(error => {
+        updateAPIHealth('dev.to', false);
+        console.error('Dev.to API failed:', error);
+        return [];
+      }));
+    }
+
+    if (!shouldSkipAPI('hashnode')) {
+      apiCalls.push(fetchHashnodeArticles().then(articles => {
+        updateAPIHealth('hashnode', true);
+        return articles;
+      }).catch(error => {
+        updateAPIHealth('hashnode', false);
+        console.error('Hashnode API failed:', error);
+        return [];
+      }));
+    }
+
+    if (!shouldSkipAPI('hackernews')) {
+      apiCalls.push(fetchHackerNewsArticles().then(articles => {
+        updateAPIHealth('hackernews', true);
+        return articles;
+      }).catch(error => {
+        updateAPIHealth('hackernews', false);
+        console.error('Hacker News API failed:', error);
+        return [];
+      }));
+    }
+
+    if (!shouldSkipAPI('medium')) {
+      apiCalls.push(fetchMediumArticles().then(articles => {
+        updateAPIHealth('medium', true);
+        return articles;
+      }).catch(error => {
+        updateAPIHealth('medium', false);
+        console.error('Medium API failed:', error);
+        return [];
+      }));
+    }
+
+    if (!shouldSkipAPI('reddit')) {
+      apiCalls.push(fetchRedditArticles().then(articles => {
+        updateAPIHealth('reddit', true);
+        return articles;
+      }).catch(error => {
+        updateAPIHealth('reddit', false);
+        console.error('Reddit API failed:', error);
+        return [];
+      }));
+    }
+
+    // Fetch from multiple sources with timeout
+    const results = await Promise.allSettled(apiCalls);
     const allArticles: BlogPost[] = [];
-    
+
     // Add successful results
-    if (devToArticles.status === 'fulfilled') {
-      allArticles.push(...devToArticles.value);
-    }
-    
-    if (redditArticles.status === 'fulfilled') {
-      allArticles.push(...redditArticles.value);
-    }
-    
+    results.forEach(result => {
+      if (result.status === 'fulfilled') {
+        allArticles.push(...result.value);
+      }
+    });
+
     // If no articles fetched, use fallback
     if (allArticles.length === 0) {
       const fallbackArticles = getFallbackArticles();
       setCachedArticles(fallbackArticles);
       return fallbackArticles;
     }
-    
-    // Sort by publication date (newest first)
-    allArticles.sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime());
-    
+
+    // Sort by publication date (newest first) and prioritize featured articles
+    allArticles.sort((a, b) => {
+      // Featured articles first
+      if (a.featured && !b.featured) return -1;
+      if (!a.featured && b.featured) return 1;
+
+      // Then by publication date
+      return new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime();
+    });
+
     // Limit total articles and cache
-    const limitedArticles = allArticles.slice(0, 20);
+    const limitedArticles = allArticles.slice(0, 25);
     setCachedArticles(limitedArticles);
-    
+
     return limitedArticles;
   } catch (error) {
     console.error('Error fetching articles:', error);
@@ -289,7 +574,7 @@ export function getAllArticlesMeta(): Promise<BlogPostMeta[]> {
 export function getRelatedArticles(currentSlug: string, tags: string[], limit = 3): Promise<BlogPostMeta[]> {
   return getAllArticles().then(articles => {
     const otherArticles = articles.filter(article => article.slug !== currentSlug);
-    
+
     // Score articles based on shared tags
     const scoredArticles = otherArticles.map(article => {
       const sharedTags = article.tags.filter(tag => tags.includes(tag));
@@ -298,7 +583,7 @@ export function getRelatedArticles(currentSlug: string, tags: string[], limit = 
         score: sharedTags.length,
       };
     });
-    
+
     // Sort by score (descending) and then by date (descending)
     scoredArticles.sort((a, b) => {
       if (a.score !== b.score) {
@@ -306,7 +591,24 @@ export function getRelatedArticles(currentSlug: string, tags: string[], limit = 
       }
       return new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime();
     });
-    
+
     return scoredArticles.slice(0, limit);
   });
+}
+
+// Export API health status for UI components
+export function getAPIHealthStatus(): Record<string, APIHealth> {
+  return getAPIHealth();
+}
+
+// Clear cache manually (useful for refresh functionality)
+export function clearArticleCache(): void {
+  if (typeof window === 'undefined') return;
+
+  try {
+    localStorage.removeItem(CACHE_KEY);
+    localStorage.removeItem(API_HEALTH_KEY);
+  } catch (error) {
+    console.error('Error clearing cache:', error);
+  }
 }

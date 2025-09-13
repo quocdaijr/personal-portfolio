@@ -108,7 +108,7 @@ export function Footer() {
               © {new Date().getFullYear()} The Augster. All rights reserved.
             </p>
             <p className="text-sm text-muted-foreground mt-2 md:mt-0">
-              Built with Next.js, Tailwind CSS, and MDX
+              Built with Next.js, TypeScript, and Tailwind CSS • Dynamic content from Dev.to, Hashnode, HN, Medium & Reddit
             </p>
           </div>
         </div>

@@ -10,9 +10,9 @@ export function BlogNotice() {
             Dynamic Content Notice
           </p>
           <p className="text-blue-700 dark:text-blue-300 leading-relaxed">
-            This blog features real-time articles from the tech community including Dev.to, Reddit, and other developer resources. 
-            External articles will open in their original source for the best reading experience. 
-            Content is cached for 30 minutes to optimize performance.
+            This blog features real-time articles from multiple tech communities including Dev.to, Hashnode, Hacker News, Medium, and Reddit.
+            External articles will open in their original source for the best reading experience.
+            Content is cached for 30 minutes and includes intelligent API health monitoring for optimal performance.
           </p>
         </div>
       </div>
