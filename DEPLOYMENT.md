@@ -35,21 +35,35 @@ This guide will help you deploy your portfolio website to Vercel and configure i
 
 ### Method 2: Deploy via Vercel CLI
 
-1. **Install Vercel CLI**
+1. **Vercel CLI is already installed locally**
    ```bash
-   npm install -g vercel
+   # CLI is installed as dev dependency
+   npx vercel --version
    ```
 
 2. **Login to Vercel**
    ```bash
-   vercel login
+   npx vercel login
    ```
+   - Choose your preferred login method (GitHub recommended)
+   - Follow the authentication prompts
 
 3. **Deploy from Project Directory**
    ```bash
-   cd /path/to/personal-portfolio
-   vercel --prod
+   # For production deployment
+   npx vercel --prod
+
+   # For preview deployment (optional)
+   npx vercel
    ```
+
+4. **Follow CLI Prompts**
+   - Set up and deploy? **Y**
+   - Which scope? Select your account
+   - Link to existing project? **N** (for first deployment)
+   - What's your project's name? **personal-portfolio**
+   - In which directory is your code located? **./**
+   - Want to override settings? **N** (uses vercel.json)
 
 ## 🔧 Post-Deployment Configuration
 
